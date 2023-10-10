@@ -14,6 +14,7 @@ settings.json
 /.eslintcache
 /.nyc_output
 /coverage
+/dist
 /output
 /error_shots
 .DS_Store
