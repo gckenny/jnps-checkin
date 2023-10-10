@@ -1,47 +1,73 @@
-const HtmlWebpackPlugin = require("html-webpack-plugin");
-const ESLintPlugin = require('eslint-webpack-plugin');
-const path = require("path");
+process.env.NODE_ENV = 'production';
 
-module.exports = {
-  entry: "./src/index.js",
-  output: {
-    filename: "main.bundle.js",
-    path: path.resolve(__dirname, "dist"),
-    clean: true,
+const path = require('path');
+const glob = require('glob');
+const { PurgeCSSPlugin } = require('purgecss-webpack-plugin');
+const HtmlWebpackPlugin = require('html-webpack-plugin');
+const without = require('lodash.without');
+const MiniCssExtractPlugin = require('mini-css-extract-plugin');
+const OptimizeCSSAssetsPlugin = require('optimize-css-assets-webpack-plugin');
+const TerserPlugin = require('terser-webpack-plugin');
+const webpack = require('webpack');
+const ESLintPlugin = require('eslint-webpack-plugin');
+const webpackConfigRules = require('./webpack.config.rules');
+
+const publicPath = '/dist/';
+const buildVersion = new Date().getTime();
+
+const webpackConfig = Object.assign({}, webpackConfigRules, {
+  mode: 'production',
+  cache: true,
+  target: 'web',
+  devtool: false, // source map should not be used in production
+  entry: {
+    app: path.resolve(__dirname, 'src/index.js'),
   },
-  plugins: [
-    new HtmlWebpackPlugin({
-      template: "./index.html",
-      filename: "index.html",
-    }),
-    // new ESLintPlugin({
-    //   // plugin options
-    //   extensions: ['js', 'jsx'],
-    //   fix: false,  // 如果想要自動修復某些問題，可以加上這個選項
-    // }),
-  ],
-  module: {
-    rules: [
-      {
-        test: /\.(js|jsx)$/,
-        exclude: /node_modules/,
-        use: [
-          {
-            loader: 'babel-loader',
-            options: {
-              presets: ['@babel/preset-env', '@babel/preset-react'],
-              plugins: ['transform-react-remove-prop-types']
-            }
-          }
-        ],
-      },
+  output: {
+    path: path.join(__dirname, 'dist'),
+    chunkFilename: `[name].[hash].bundle.js?_=${buildVersion}`,
+    filename: `[name].[hash].bundle.js?_=${buildVersion}`,
+    pathinfo: false, // Defaults to false and should not be used in production
+    publicPath: publicPath,
+  },
+  optimization: {
+    minimizer: [
+      new TerserPlugin({
+        // sourceMap: true,
+      }),
+      new OptimizeCSSAssetsPlugin(),
     ],
   },
-  devServer: {
-    historyApiFallback: true, // 這行會讓 webpack-dev-server 在遇到 404 回應時返回 index.html
-    static: path.resolve(__dirname, "dist"),
-    compress: true,
-    port: 3000,
+  plugins: [
+    new webpack.DefinePlugin({
+      'process.env': {
+        NODE_ENV: JSON.stringify('production'),
+        BUILD_VERSION: JSON.stringify(buildVersion),
+        PUBLIC_PATH: JSON.stringify(publicPath),
+      },
+    }),
+    new MiniCssExtractPlugin({
+      filename: '[name].[contenthash].css',
+      chunkFilename: '[id].[contenthash].css',
+    }),
+    new PurgeCSSPlugin({
+      paths: glob.sync(`${path.join(__dirname, 'src')}/**/*`, { nodir: true }),
+    }),
+    new HtmlWebpackPlugin({
+      chunks: ['app'],
+      filename: path.resolve(__dirname, 'dist/index.html'),
+      template: path.resolve(__dirname, 'public/index.html'),
+      chunksSortMode: 'auto', // Sort chunks by dependency
+    }),
+    new ESLintPlugin({
+      quiet: true,
+    }),
+  ],
+  node: false,
+  resolve: {
+    modules: [path.resolve(__dirname), 'node_modules'],
+    extensions: ['.js', '.jsx'],
   },
-  mode: "production",
-};
+});
+
+module.exports = webpackConfig;
