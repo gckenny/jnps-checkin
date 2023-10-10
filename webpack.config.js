@@ -4,7 +4,6 @@ const path = require('path');
 const glob = require('glob');
 const { PurgeCSSPlugin } = require('purgecss-webpack-plugin');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
-const without = require('lodash.without');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const OptimizeCSSAssetsPlugin = require('optimize-css-assets-webpack-plugin');
 const TerserPlugin = require('terser-webpack-plugin');
@@ -29,6 +28,9 @@ const webpackConfig = Object.assign({}, webpackConfigRules, {
     filename: `[name].[hash].bundle.js?_=${buildVersion}`,
     pathinfo: false, // Defaults to false and should not be used in production
     publicPath: publicPath,
+    clean: {
+      keep: '.keep',
+    },
   },
   optimization: {
     minimizer: [
@@ -37,6 +39,16 @@ const webpackConfig = Object.assign({}, webpackConfigRules, {
       }),
       new OptimizeCSSAssetsPlugin(),
     ],
+    splitChunks: {
+      chunks: 'all',
+      cacheGroups: {
+        vendor: {
+          test: /[\\/]node_modules[\\/]/,
+          name: 'vendors',
+          chunks: 'all',
+        },
+      },
+    },
   },
   plugins: [
     new webpack.DefinePlugin({
@@ -58,6 +70,14 @@ const webpackConfig = Object.assign({}, webpackConfigRules, {
       filename: path.resolve(__dirname, 'dist/index.html'),
       template: path.resolve(__dirname, 'public/index.html'),
       chunksSortMode: 'auto', // Sort chunks by dependency
+      minify: {
+        collapseWhitespace: true,
+        removeComments: true,
+        removeRedundantAttributes: true,
+        removeScriptTypeAttributes: true,
+        removeStyleLinkTypeAttributes: true,
+        useShortDoctype: true,
+      },
     }),
     new ESLintPlugin({
       quiet: true,
@@ -67,6 +87,22 @@ const webpackConfig = Object.assign({}, webpackConfigRules, {
   resolve: {
     modules: [path.resolve(__dirname), 'node_modules'],
     extensions: ['.js', '.jsx'],
+  },
+  devServer: {
+    static: {
+      directory: path.resolve(__dirname, 'dist'),
+      publicPath: publicPath,
+      watch: {
+        ignored: /node_modules/,
+      },
+    },
+    host: process.env.WEBPACK_DEV_SERVER_HOST,
+    allowedHosts: 'all',
+  },
+  performance: {
+    hints: false,
+    maxEntrypointSize: 20000,
+    maxAssetSize: 20000,
   },
 });
 
