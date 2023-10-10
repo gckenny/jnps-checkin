@@ -1,27 +1,45 @@
 // src/index.js
-import React, { useState } from "react";
-import ReactDOM from "react-dom/client";
-import { BrowserRouter as Router, Route, Routes, useNavigate } from "react-router-dom";
-import { ThemeProvider } from "@mui/material/styles";
-import Table from "./components/Table";
-import CheckIn from "./components/CheckIn";
-import theme from "./theme";
-import { format } from "date-fns";
+import React, { useState } from 'react';
+import ReactDOM from 'react-dom/client';
+import { BrowserRouter as Router, Route, Routes, useNavigate } from 'react-router-dom';
+import { ThemeProvider } from '@mui/material/styles';
+import Table from './components/Table';
+import CheckIn from './components/CheckIn';
+import theme from './theme';
+import { format } from 'date-fns';
 
 function Pages({ data, setData, handleConfirm }) {
   const navigate = useNavigate(); // 获取 navigate 函数
 
   const handleRowClick = (row) => {
     setData({ ...data, selectedRow: row });
-    navigate("/jnps-checkin/checkin"); // 导航到 /checkin 路由
+    navigate('/checkin'); // 导航到 /checkin 路由
   };
 
   return (
     <Routes>
-      <Route path='/jnps-checkin/checkin' element={<CheckIn {...data.selectedRow} onConfirm={() => handleConfirm(navigate)} />} />
-      <Route path='/jnps-checkin/' element={<Table data={data.rows} onRowClick={handleRowClick} />} />
+      <Route
+        path="/checkin"
+        element={<CheckIn {...data.selectedRow} onConfirm={() => handleConfirm(navigate)} />}
+      />
+      <Route
+        path="/"
+        element={<Table data={data.rows} onRowClick={handleRowClick} />}
+      />
+      <Route path="*" element={<NotFound />} />
     </Routes>
   );
+}
+
+function NotFound() {
+  const navigate = useNavigate();
+
+  // 使用 useEffect 來確保在組件渲染後立即執行重定向
+  React.useEffect(() => {
+    navigate('/');
+  }, [navigate]);
+
+  return null; // 此組件不會渲染任何內容
 }
 
 function createFakeData() {
@@ -30,8 +48,8 @@ function createFakeData() {
     fakeData.push({
       id: i,
       name: `姓名${i}`,
-      group: i % 2 === 0 ? "A" : "B",
-      gender: i % 2 === 0 ? "M" : "F",
+      group: i % 2 === 0 ? 'A' : 'B',
+      gender: i % 2 === 0 ? 'M' : 'F',
       class: `${i * 100 >= 1000 ? (i * 100) / 10 : i * 100}`,
       checkinTime: null,
     });
@@ -46,22 +64,22 @@ function App() {
     const newData = data.rows.map((row) => {
       if (row.id === data.selectedRow.id) {
         // 使用 selectedRow.id 而不是传递的 id
-        const checkinTime = format(new Date(), "M/d HH:mm");
+        const checkinTime = format(new Date(), 'M/d HH:mm');
         return { ...row, checkinTime: checkinTime }; // 更新签到时间
       }
       return row;
     });
     setData({ ...data, rows: newData }); // 更新数据状态
-    navigate("./"); // 如果需要，您可以在此导航回表格页面
+    navigate('/'); // 如果需要，您可以在此导航回表格页面
   };
   return (
-    <Router>
+    <Router basename="/jnps-checkin/">
       <Pages data={data} setData={setData} handleConfirm={handleConfirm} />
     </Router>
   );
 }
 
-const root = ReactDOM.createRoot(document.getElementById("root"));
+const root = ReactDOM.createRoot(document.getElementById('root'));
 
 root.render(
   <ThemeProvider theme={theme}>

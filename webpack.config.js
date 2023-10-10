@@ -94,6 +94,11 @@ const webpackConfig = Object.assign({}, webpackConfigRules, {
         ignored: /node_modules/,
       },
     },
+    historyApiFallback: {
+      rewrites: [
+        { from: /^\/jnps-checkin\/.*$/, to: '/jnps-checkin/index.html' },
+      ],
+    },
     host: process.env.WEBPACK_DEV_SERVER_HOST,
     allowedHosts: 'all',
   },

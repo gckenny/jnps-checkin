@@ -8,12 +8,12 @@ function CheckIn({ id, name, onConfirm }) {
   const navigate = useNavigate();
   const checkinTime = format(new Date(), "M/d HH:mm");
   const handleBack = () => {
-    navigate("/jnps-checkin/");
+    navigate("/");
   };
 
   useEffect(() => {
     if (!name) {
-      navigate("/jnps-checkin/");
+      navigate("/");
     }
   }, [name, navigate]);
 
