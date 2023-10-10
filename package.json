@@ -1,7 +1,7 @@
 {
   "name": "jnps-checkin",
   "version": "1.0.0",
-  "main": "index.js",
+  "main": "index.html",
   "author": "Kenny Huang <kenny_huang@trendmicro.com>",
   "license": "MIT",
   "scripts": {
