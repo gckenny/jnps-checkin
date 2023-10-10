@@ -11,14 +11,14 @@ const webpack = require('webpack');
 const ESLintPlugin = require('eslint-webpack-plugin');
 const webpackConfigRules = require('./webpack.config.rules');
 
-const publicPath = '/jnps-checkin/';
+const publicPath = '/';
 const buildVersion = new Date().getTime();
 
 const webpackConfig = Object.assign({}, webpackConfigRules, {
   mode: 'production',
   cache: true,
   target: 'web',
-  devtool: false, // source map should not be used in production
+  devtool: 'source-map', // source map should not be used in production
   entry: {
     app: path.resolve(__dirname, 'src/index.js'),
   },
@@ -28,9 +28,9 @@ const webpackConfig = Object.assign({}, webpackConfigRules, {
     filename: `[name].[hash].bundle.js?_=${buildVersion}`,
     pathinfo: false, // Defaults to false and should not be used in production
     publicPath: publicPath,
-    clean: {
-      keep: '.keep',
-    },
+    // clean: {
+    //   keep: '.keep',
+    // },
   },
   optimization: {
     minimizer: [
@@ -70,14 +70,14 @@ const webpackConfig = Object.assign({}, webpackConfigRules, {
       filename: path.resolve(__dirname, 'dist/index.html'),
       template: path.resolve(__dirname, 'public/index.html'),
       chunksSortMode: 'auto', // Sort chunks by dependency
-      minify: {
-        collapseWhitespace: true,
-        removeComments: true,
-        removeRedundantAttributes: true,
-        removeScriptTypeAttributes: true,
-        removeStyleLinkTypeAttributes: true,
-        useShortDoctype: true,
-      },
+      // minify: {
+      //   collapseWhitespace: true,
+      //   removeComments: true,
+      //   removeRedundantAttributes: true,
+      //   removeScriptTypeAttributes: true,
+      //   removeStyleLinkTypeAttributes: true,
+      //   useShortDoctype: true,
+      // },
     }),
     new ESLintPlugin({
       quiet: true,
@@ -100,9 +100,7 @@ const webpackConfig = Object.assign({}, webpackConfigRules, {
     allowedHosts: 'all',
   },
   performance: {
-    hints: false,
-    maxEntrypointSize: 20000,
-    maxAssetSize: 20000,
+    hints: false, // DISABLE WARNING in asset size limit: The following asset(s) exceed the recommended size limit (244 KiB).
   },
 });
 

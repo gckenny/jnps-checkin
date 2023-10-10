@@ -1,12 +1,12 @@
 {
   "name": "jnps-checkin",
   "version": "1.0.0",
-  "main": "index.html",
+  "main": "src/index.js",
   "author": "Kenny Huang <kenny_huang@trendmicro.com>",
   "license": "MIT",
   "scripts": {
     "start": "webpack serve --config webpack.config.js",
-    "build": "npx webpack --config webpack.config.js",
+    "build": "webpack --config webpack.config.js",
     "deploy": "npx webpack --config webpack.config.js && gh-pages -d dist"
   },
   "dependencies": {
@@ -20,7 +20,6 @@
     "date-fns": "^2.30.0",
     "html-webpack-plugin": "^5.5.3",
     "mini-css-extract-plugin": "^2.7.6",
-    "node-polyfill-webpack-plugin": "^2.0.1",
     "optimize-css-assets-webpack-plugin": "^6.0.1",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
@@ -34,7 +33,6 @@
     "@babel/eslint-plugin": "^7.22.10",
     "babel-plugin-transform-react-remove-prop-types": "^0.4.24",
     "core-js": "^3.33.0",
-    "es5-shim": "^4.6.7",
     "eslint": "^8.51.0",
     "eslint-config-prettier": "^9.0.0",
     "eslint-config-react-app": "^7.0.1",
