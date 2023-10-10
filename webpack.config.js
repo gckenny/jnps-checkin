@@ -10,6 +10,7 @@ const TerserPlugin = require('terser-webpack-plugin');
 const webpack = require('webpack');
 const ESLintPlugin = require('eslint-webpack-plugin');
 const webpackConfigRules = require('./webpack.config.rules');
+const CopyPlugin = require('copy-webpack-plugin');
 
 const publicPath = '/jnps-checkin/';
 const buildVersion = new Date().getTime();
@@ -49,6 +50,9 @@ const webpackConfig = Object.assign({}, webpackConfigRules, {
     },
   },
   plugins: [
+    new CopyPlugin({
+      patterns: [{ from: 'public/404.html', to: 'dist/404.html' }],
+    }),
     new webpack.DefinePlugin({
       'process.env': {
         NODE_ENV: JSON.stringify('production'),
@@ -95,9 +99,7 @@ const webpackConfig = Object.assign({}, webpackConfigRules, {
       },
     },
     historyApiFallback: {
-      rewrites: [
-        { from: /^\/jnps-checkin\/.*$/, to: '/jnps-checkin/index.html' },
-      ],
+      rewrites: [{ from: /^\/jnps-checkin\/.*$/, to: '/jnps-checkin/index.html' }],
     },
     host: process.env.WEBPACK_DEV_SERVER_HOST,
     allowedHosts: 'all',
