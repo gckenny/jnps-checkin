@@ -7,7 +7,8 @@
   "scripts": {
     "start": "webpack serve --config webpack.config.js",
     "build": "webpack --config webpack.config.js",
-    "deploy": "npx webpack --config webpack.config.js && gh-pages -d dist"
+    "deploy": "npm run clean && npx webpack --config webpack.config.js && gh-pages -d dist",
+    "clean": "del-cli ./dist"
   },
   "dependencies": {
     "@babel/core": "^7.23.0",

@@ -11,26 +11,24 @@ const webpack = require('webpack');
 const ESLintPlugin = require('eslint-webpack-plugin');
 const webpackConfigRules = require('./webpack.config.rules');
 
-const publicPath = '/';
+const publicPath = '/jnps-checkin/';
 const buildVersion = new Date().getTime();
 
 const webpackConfig = Object.assign({}, webpackConfigRules, {
   mode: 'production',
   cache: true,
   target: 'web',
-  devtool: 'source-map', // source map should not be used in production
+  devtool: false, // source map should not be used in production
   entry: {
     app: path.resolve(__dirname, 'src/index.js'),
   },
   output: {
     path: path.join(__dirname, 'dist'),
-    chunkFilename: `[name].[hash].bundle.js?_=${buildVersion}`,
-    filename: `[name].[hash].bundle.js?_=${buildVersion}`,
+    chunkFilename: `[name].bundle.js?_=${buildVersion}`,
+    filename: `[name].bundle.js?_=${buildVersion}`,
     pathinfo: false, // Defaults to false and should not be used in production
     publicPath: publicPath,
-    // clean: {
-    //   keep: '.keep',
-    // },
+    clean: {},
   },
   optimization: {
     minimizer: [
@@ -59,8 +57,8 @@ const webpackConfig = Object.assign({}, webpackConfigRules, {
       },
     }),
     new MiniCssExtractPlugin({
-      filename: '[name].[contenthash].css',
-      chunkFilename: '[id].[contenthash].css',
+      filename: '[name].css',
+      chunkFilename: '[id].css',
     }),
     new PurgeCSSPlugin({
       paths: glob.sync(`${path.join(__dirname, 'src')}/**/*`, { nodir: true }),

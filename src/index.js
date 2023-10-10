@@ -13,13 +13,13 @@ function Pages({ data, setData, handleConfirm }) {
 
   const handleRowClick = (row) => {
     setData({ ...data, selectedRow: row });
-    navigate("/checkin"); // 导航到 /checkin 路由
+    navigate("/jnps-checkin/checkin"); // 导航到 /checkin 路由
   };
 
   return (
     <Routes>
-      <Route path='/checkin' element={<CheckIn {...data.selectedRow} onConfirm={() => handleConfirm(navigate)} />} />
-      <Route path='/' element={<Table data={data.rows} onRowClick={handleRowClick} />} />
+      <Route path='/jnps-checkin/checkin' element={<CheckIn {...data.selectedRow} onConfirm={() => handleConfirm(navigate)} />} />
+      <Route path='/jnps-checkin/' element={<Table data={data.rows} onRowClick={handleRowClick} />} />
     </Routes>
   );
 }
@@ -52,7 +52,7 @@ function App() {
       return row;
     });
     setData({ ...data, rows: newData }); // 更新数据状态
-    navigate("/"); // 如果需要，您可以在此导航回表格页面
+    navigate("./"); // 如果需要，您可以在此导航回表格页面
   };
   return (
     <Router>
