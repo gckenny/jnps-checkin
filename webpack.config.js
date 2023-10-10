@@ -12,7 +12,7 @@ const webpack = require('webpack');
 const ESLintPlugin = require('eslint-webpack-plugin');
 const webpackConfigRules = require('./webpack.config.rules');
 
-const publicPath = '/dist/';
+const publicPath = '/jnps-checkin/';
 const buildVersion = new Date().getTime();
 
 const webpackConfig = Object.assign({}, webpackConfigRules, {
