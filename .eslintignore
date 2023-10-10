@@ -14,6 +14,7 @@ assets
 
 # production
 output
+dist
 
 # L10N
 l10n
