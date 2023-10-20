@@ -12,14 +12,15 @@ const ESLintPlugin = require('eslint-webpack-plugin');
 const webpackConfigRules = require('./webpack.config.rules');
 const CopyPlugin = require('copy-webpack-plugin');
 
-const publicPath = '/jnps-checkin/';
+const publicPath = '/jnps/checkin/';
 const buildVersion = new Date().getTime();
 
 const webpackConfig = Object.assign({}, webpackConfigRules, {
-  mode: 'production',
+  mode: 'development',
   cache: true,
   target: 'web',
-  devtool: false, // source map should not be used in production
+  // devtool: false, // source map should not be used in production
+  devtool: 'eval-source-map',
   entry: {
     app: path.resolve(__dirname, 'src/index.js'),
   },
@@ -27,7 +28,7 @@ const webpackConfig = Object.assign({}, webpackConfigRules, {
     path: path.join(__dirname, 'dist'),
     chunkFilename: `[name].bundle.js?_=${buildVersion}`,
     filename: `[name].bundle.js?_=${buildVersion}`,
-    pathinfo: false, // Defaults to false and should not be used in production
+    pathinfo: true, // Defaults to false and should not be used in production
     publicPath: publicPath,
     clean: {},
   },
@@ -51,11 +52,11 @@ const webpackConfig = Object.assign({}, webpackConfigRules, {
   },
   plugins: [
     new CopyPlugin({
-      patterns: [{ from: 'public/404.html', to: 'dist/404.html' }],
+      patterns: [{ from: 'public/404.html', to: '404.html' }],
     }),
     new webpack.DefinePlugin({
       'process.env': {
-        NODE_ENV: JSON.stringify('production'),
+        // NODE_ENV: JSON.stringify('production'),
         BUILD_VERSION: JSON.stringify(buildVersion),
         PUBLIC_PATH: JSON.stringify(publicPath),
       },
@@ -99,7 +100,7 @@ const webpackConfig = Object.assign({}, webpackConfigRules, {
       },
     },
     historyApiFallback: {
-      rewrites: [{ from: /^\/jnps-checkin\/.*$/, to: '/jnps-checkin/index.html' }],
+      rewrites: [{ from: /^\/jnps\/checkin\/.*$/, to: '/jnps/checkin/index.html' }],
     },
     host: process.env.WEBPACK_DEV_SERVER_HOST,
     allowedHosts: 'all',

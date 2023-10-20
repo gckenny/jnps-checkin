@@ -11,7 +11,7 @@
   "arrowParens": "always",
   "htmlWhitespaceSensitivity": "css",
   "endOfLine": "lf",
-  "printWidth": 100,
+  "printWidth": 120,
   "importOrder": [
     "<THIRD_PARTY_MODULES>",
     "^src/",
